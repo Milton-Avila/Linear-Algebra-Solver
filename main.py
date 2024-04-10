@@ -15,7 +15,6 @@ class Transformacao:
                          'z': 2}
 
 
-
         self.separar_vetor()
         self.montar_matriz_trans()
         if(self.matTrans != None):
@@ -26,8 +25,6 @@ class Transformacao:
             self.operador()
             if(self.operador): self.acha_autovalores()
        
-            
-        
 
     # É informado a dimensão do *Domínio* e *Contra Domínio*
     def descobre_dimensao(self, vec: list):
