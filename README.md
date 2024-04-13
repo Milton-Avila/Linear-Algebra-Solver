@@ -3,5 +3,3 @@
 Executar interface.py
 
 Colocar o domínior, contra domínio e executar.
-
-mudando readme
