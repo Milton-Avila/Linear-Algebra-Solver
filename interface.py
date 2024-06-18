@@ -1,88 +1,102 @@
 import tkinter as tk
 import main as main
 
+# Exec Calcs
 def calcular():
-    dominio = caixa_valor1.get()
-    dominio += '='
-    contraDominio = caixa_valor2.get()
-    resultado = dominio + contraDominio
+    func = "".join([input1.get(), '=', input2.get()])
 
-    T = main.Transformacao(resultado)
+    T = main.Transform(func)
+    results = T.getData()
+    printResults(results)
 
-    lista_resultado = T.get_dados()
+    windowMain.geometry("520x480")
 
-    print_resultado(lista_resultado)
+# Show Results
+def printResults(results):
+    if(results == None):
+        labelMatrix.config(text=f"Matriz Inválida",bg=bgDefault)
 
-def print_resultado(lista_resultado):
-    if(lista_resultado == None):
-        rotulo_matriz.config(text=f"Matriz Inválida",bg="#E5F7FF")
     else:
-        rotulo_matriz.config(
-            text=f"Matriz:\n {lista_resultado[0]}", bg="#E5F7FF")
-        rotulo_dimImg.config(
-            text=f"Dimensão da Imagem: {lista_resultado[1]}", bg="#E5F7FF")
-        rotulo_dimKernel.config(
-            text=f"Dimensão do Kernel: {lista_resultado[2]}", bg="#E5F7FF")
-        if(lista_resultado[3]):
-            rotulo_bijetora.config(
-                text=f"É bijetora", bg="#E5F7FF")
+        labelMatrix.config(
+            text=f"Matriz:\n {results[0]}", bg=bgDefault)
+        labelImgDim.config(
+            text=f"Dimensão da Imagem: {results[1]}", bg=bgDefault)
+        labelKernelDim.config(
+            text=f"Dimensão do Kernel: {results[2]}", bg=bgDefault)
+        
+        if(results[3]):
+            labelBijector.config(
+                text=f"Bijetora: Sim", bg=bgDefault)
         else:
-            rotulo_bijetora.config(
-                text=f"Não é bijetora", bg="#E5F7FF")
-        if(lista_resultado[4]):
-            rotulo_operador.config(text=f"É Operadora",bg="#E5F7FF")
-            rotulo_autovalores.config(text=f"Autovalores: {lista_resultado[5]}",bg="#E5F7FF")
+            labelBijector.config(
+                text=f"Bijetora: Não", bg=bgDefault)
+            
+        if(results[4]):
+            labelOperator.config(text=f"Operadora: Sim", bg=bgDefault)
+            labelEigenvalue.config(text=f"Autovalores:\n {results[5]}",bg=bgDefault)
         else:
-            rotulo_operador.config(text=f"Não é Operadora",bg="#E5F7FF")
-            rotulo_autovalores.config(text=f"")
+            labelOperator.config(text=f"Operadora: Não", bg=bgDefault)
+            labelEigenvalue.config(text=f"")
 
-
+# End
 def encerrar():
-    janela_principal.destroy()
+    windowMain.destroy()
 
-janela_principal = tk.Tk()
-janela_principal.title("Formulário de Cálculo")
-janela_principal.geometry("500x500")
-janela_principal.configure(bg="#F0F0F0")
-janela_principal.option_add("*Font", "Arial 12")
+# Colors
+bgMarked = "#F0F0F0"
+bgDefault = "#E5F7FF"
 
-rotulo_valor1 = tk.Label(janela_principal, text="Domínio:")
-rotulo_valor1.grid(row=0, column=0, padx=10, pady=20)
-caixa_valor1 = tk.Entry(janela_principal)
-caixa_valor1.grid(row=1, column=0, padx=10, pady=0)
+# Window
+windowMain = tk.Tk()
+windowMain.title("Calculadora de Matriz")
+windowMain.geometry("520x230")
+windowMain.configure(bg=bgMarked)
+windowMain.option_add("*Font", "Arial 12")
 
-rotulo_valor2 = tk.Label(janela_principal, text="ContraDomínio:")
-rotulo_valor2.grid(row=2, column=0, padx=10, pady=0)
-caixa_valor2 = tk.Entry(janela_principal)
-caixa_valor2.grid(row=3, column=0, padx=10, pady=0)
+# Labels
+label1 = tk.Label(windowMain, text="Domínio:")
+label1.grid(row=0, column=0, pady=10)
+label2 = tk.Label(windowMain, text="ContraDomínio:")
+label2.grid(row=1, column=0)
 
-botao_calcular = tk.Button(
-    janela_principal, text="Calcular", command=calcular, width=10)
-botao_calcular.grid(row=2, column=1, padx=10, pady=15)
+# Inputs
+input1 = tk.Entry(windowMain)
+input1.grid(row=0, column=1, padx=20, sticky=tk.E+tk.W)
 
-botao_encerrar = tk.Button(
-    janela_principal, text="Encerrar", command=encerrar, width=10)
-botao_encerrar.grid(row=3, column=1, padx=10, pady=15)
+input2 = tk.Entry(windowMain)
+input2.grid(row=1, column=1, padx=20, sticky=tk.E+tk.W)
 
-rotulo_matriz = tk.Label(janela_principal, text="", bg="#F0F0F0")
-rotulo_matriz.grid(row=4, column=0, padx=0, pady=15)
+# Buttons
+buttonEnd = tk.Button(
+    windowMain, text="Encerrar", command=encerrar, width=10)
+buttonEnd.grid(row=2, column=0, padx=40, pady=100)
 
-rotulo_dimImg = tk.Label(janela_principal, text="", bg="#F0F0F0")
-rotulo_dimImg.grid(row=4, column=1, padx=0, pady=15)
+buttonCalc = tk.Button(
+    windowMain, text="Calcular", command=calcular, width=10)
+buttonCalc.grid(row=2, column=1, padx=40, sticky=tk.E)
 
-rotulo_dimKernel = tk.Label(janela_principal, text="", bg="#F0F0F0")
-rotulo_dimKernel.grid(row=5, column=1, padx=0, pady=15)
+# Results
+labelOperator = tk.Label(windowMain, text='', bg="#F0F0F0")
+labelOperator.grid(row=3, column=0)
 
-rotulo_bijetora = tk.Label(janela_principal, text="", bg="#F0F0F0")
-rotulo_bijetora.grid(row=5, column=0, padx=0, pady=15)
+labelImgDim = tk.Label(windowMain, bg=bgMarked)
+labelImgDim.grid(row=3, column=1)
 
-rotulo_operador = tk.Label(janela_principal, text="", bg="#F0F0F0")
-rotulo_operador.grid(row=6, column=0, padx=0, pady=15)
+labelKernelDim = tk.Label(windowMain, bg=bgMarked)
+labelKernelDim.grid(row=4, column=1, pady=15)
 
-rotulo_autovalores = tk.Label(janela_principal, text="", bg="#F0F0F0")
-rotulo_autovalores.grid(row=6, column=1, padx=0, pady=15)
+labelBijector = tk.Label(windowMain, bg=bgMarked)
+labelBijector.grid(row=4, column=0, pady=15)
 
-janela_principal.grid_columnconfigure(0, weight=1)
-janela_principal.grid_columnconfigure(1, weight=1)
+labelMatrix = tk.Label(windowMain, bg=bgMarked)
+labelMatrix.grid(row=5, column=0)
 
-janela_principal.mainloop()
+labelEigenvalue = tk.Label(windowMain, bg=bgMarked)
+labelEigenvalue.grid(row=5, column=1)
+
+# Grid Config
+windowMain.grid_columnconfigure(0, weight=1)
+windowMain.grid_columnconfigure(1, weight=1)
+
+# While True
+windowMain.mainloop()

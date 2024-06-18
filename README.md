@@ -1,5 +1,10 @@
 # Linear Algebra Solver
 
-Executar interface.py
+Execute interface.py
 
-Colocar o domínior, contra domínio e executar.
+# Exemplo de Entrada:
+- Domínio: 
+x, y, z
+
+- Contradomínio:
+5x + 4y + z, 2x + 6y + z, - 2x + 2y + 2z

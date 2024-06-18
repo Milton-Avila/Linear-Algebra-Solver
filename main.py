@@ -1,33 +1,36 @@
 import numpy as np
 
-class Transformacao:
-    def __init__(self, vector):
-        # Representa toda a Equação coletada no Input ( 'Dominio + Contra-Domínio' )
+class Transform:
+    def __init__(self, vector) -> list:
+        # Represents all the operation (Domain + Codomain)
         self.vector = vector
-        # Variável que vai conter apenas o Domínio da Equação
+
+        # Domain Var
         self.dom = ''
-        # Variável que vai conter apenas o Contra-Domínio da Equação
+
+        # Codoman Var
         self.cDom = ''
-        # Variável que contém a dimensão do contra-domínio
+
+        # Codomain Dimension
         self.dim = [0]*2
         self.dicIndex = {'x': 0,
                          'y': 1,
                          'z': 2}
 
-
-        self.separar_vetor()
-        self.montar_matriz_trans()
+        self.splitVector()
+        self.createTransMatrix()
+        
         if(self.matTrans != None):
-            self.monta_matriz()
-            self.dimensao_imagem()
-            self.dimensao_kernel()
-            self.bijetora()
-            self.operador()
-            if(self.operador): self.acha_autovalores()
+            self.createMatrix()
+            self.imgDimension()
+            self.findKernel()
+            self.isBijector()
+            self.isOperator()
+            if(self.isOperator): self.findEigvals()
        
 
-    # É informado a dimensão do *Domínio* e *Contra Domínio*
-    def descobre_dimensao(self, vec: list):
+    # Find Dimension Informing Domain & coDomain
+    def dimensionFinder(self, vec: list):
         dim = 1
 
         for i in vec:
@@ -36,23 +39,23 @@ class Transformacao:
         
         return dim
 
-    # Função responsável por separar o vetor 
-    def separar_vetor(self):
+    def splitVector(self):
         vector = self.vector.replace(' ', '')
 
-        # O vetor é dividido entre dom e cdom
-        self.dom = vector.split('=')[0]
-        self.cDom = vector.split('=')[1]
+        # Splits Vector in Dom & coDom
+        splited = vector.split('=')
+        self.dom = splited[0]
+        self.cDom = splited[1]
 
-        # O número de linhas é definido pela dimensão do contra domínio
-        self.dim[0] = self.descobre_dimensao(self.cDom)
+        # Rows = coDomain Dimension
+        self.dim[0] = self.dimensionFinder(self.cDom)
 
-        # O número de colunas é definido pela dimensão do domínio
-        self.dim[1] = self.descobre_dimensao(self.dom)
+        # Columns = Domain Dimension
+        self.dim[1] = self.dimensionFinder(self.dom)
 
-    # Função responsável por criar a matriz de transformação Linear
-    def montar_matriz_trans(self):
-        # Separar em sistemas individuais
+    def createTransMatrix(self):
+
+        # Split in Individual Systems
         systems = (self.cDom.split(","))
         matTrans = [0]* np.prod(self.dim)
         count, count2 = 0, False
@@ -91,77 +94,73 @@ class Transformacao:
         except:
             self.matTrans = None
 
-    # Função responsável por montar a matriz
-    def monta_matriz(self):
-        matriz = np.array(self.matTrans)
-        matriz.shape = (self.dim)
-        self.matriz = matriz
-
-    # Função responsável por encontrar a dimensão da imagem
-    def dimensao_imagem(self):
-        dimImg = np.linalg.matrix_rank(self.matriz)       
+    def createMatrix(self):
+        matrix = np.array(self.matTrans)
+        matrix.shape = (self.dim)
+        self.matrix = matrix
+        
+    def imgDimension(self):
+        dimImg = np.linalg.matrix_rank(self.matrix)       
         self.dimImg = dimImg
 
-    # Função responsável por encontrar a dimensão do Kernel/núcleo
-    def dimensao_kernel(self):
-        # Dimensão do kernel (espaço nulo)
-        dimKernel = self.matriz.shape[1] - self.dimImg
+    def findKernel(self):
+        dimKernel = self.matrix.shape[1] - self.dimImg
         self.dimKernel = dimKernel
 
-    # Função que determina se a matriz da transformação Linear é bijetora
-    def bijetora(self):
-        # Verifica se é bijetora
-        bijetora = self.dimImg == self.matriz.shape[0] and self.dimKernel == 0
-        self.bijetora = bijetora
+    def findEigvals(self):
+        eighvals = np.linalg.eigvals(self.matrix)
+        self.eighvals = eighvals
 
-    # Função que determina se a matriz da transformação Linear é operadora
-    def operador(self):
-        operador = self.dim[0] == self.dim[1]
-        self.operador = operador
+    def isBijector(self):
+        isBijector = self.dimImg == self.matrix.shape[0] and self.dimKernel == 0
+        self.isBijector = isBijector
 
-    # Função que encontra os autovalores
-    def acha_autovalores(self):
-        autovalores = np.linalg.eigvals(self.matriz)
-        self.autovalores = autovalores
+    def isOperator(self):
+        isOperator = self.dim[0] == self.dim[1]
+        self.isOperator = isOperator
 
-    # Função teste que mostra os dados 
-    def mostra_dados(self):
-        print(" MATRIZ RELACIONADA: ")
-        print(self.matriz)
-        print(" DIMENSÃO DA IMAGEM: ", self.dimImg)
-        print(" DIMENSÃO DO KERNEL: ", self.dimKernel)
-        if(self.bijetora): print(" É BIJETORA ")
-        else: print(" NÃO É BIJETORA ")
+    # Console Print Data
+    def showData(self):
+        print(" Related Matrix: ")
+        print(self.matrix)
+        print(" Image Dimension: ", self.dimImg)
+        print(" Kernel Dimension: ", self.dimKernel)
 
-        if(self.operador): 
-            print(" É OPERADOR: ")
-            print(" AUTOVALORES: ")
-            print(self.autovalores)
+        if(self.isBijector): print(" Bijector: YES ")
+        else: print(" Bijector: NO ")
+
+        if(self.isOperator): 
+            print(" Operator: YES")
+            print(" Eigenvalue: ")
+            print(self.eighvals)
+
         else:
-            print(" NÃO É OPERADOR ")
+            print(" Operator: NO ")
     
-    # Função que pega os dados
-    def get_dados(self):
+    def getData(self):
         if(self.matTrans != None):
-            lista_dados = [self.matriz, self.dimImg, 
-                        self.dimKernel, self.bijetora, 
-                        self.operador]
-            if(self.operador):
-                lista_dados.append(self.autovalores)
+            data = [self.matrix, self.dimImg, 
+                        self.dimKernel, self.isBijector, 
+                        self.isOperator]
+            
+            if(self.isOperator):
+                data.append(self.eighvals)
+                
             else:
-                lista_dados.append(False)
+                data.append(False)
+
         else:
-            lista_dados = None
-        return lista_dados
+            data = None
+
+        return data
 
 
-
-# Exemplo de Entrada:
+# Entry Sample:
 '''
 x, y, z = 5x + 4y + z, 2x + 6y + z, - 2x + 2y + 2z
 '''
 
-# Exemplo de string output
+# Out Sample
 '''
 [x,y,z, x,y,z, x,y,z]
 [2,0,0, 0,2,0, 0,0,5]
