@@ -3,17 +3,17 @@ import numpy as np
 class Transform:
     def __init__(self, vector) -> list:
         # Represents all the operation (Domain + Codomain)
-        self.vector = vector
+        self.vector: list = vector
 
         # Domain Var
-        self.dom = ''
+        self.dom: str = ''
 
         # Codoman Var
-        self.cDom = ''
+        self.cDom: str = ''
 
         # Codomain Dimension
-        self.dim = [0]*2
-        self.dicIndex = {'x': 0,
+        self.dim: list = [0]*2
+        self.dicIndex: dict = {'x': 0,
                          'y': 1,
                          'z': 2}
 
@@ -24,13 +24,14 @@ class Transform:
             self.createMatrix()
             self.imgDimension()
             self.findKernel()
-            self.isBijector()
-            self.isOperator()
-            if(self.isOperator): self.findEigvals()
-       
+            self.isItBijector()
+            self.isItOperator()
+
+            if(self.isOperator):
+                self.findEigvals()
 
     # Find Dimension Informing Domain & coDomain
-    def dimensionFinder(self, vec: list):
+    def dimensionFinder(self, vec: list) -> int:
         dim = 1
 
         for i in vec:
@@ -39,13 +40,13 @@ class Transform:
         
         return dim
 
-    def splitVector(self):
+    def splitVector(self) -> None:
         vector = self.vector.replace(' ', '')
 
         # Splits Vector in Dom & coDom
         splited = vector.split('=')
-        self.dom = splited[0]
-        self.cDom = splited[1]
+        self.dom: list = splited[0]
+        self.cDom: list = splited[1]
 
         # Rows = coDomain Dimension
         self.dim[0] = self.dimensionFinder(self.cDom)
@@ -53,7 +54,7 @@ class Transform:
         # Columns = Domain Dimension
         self.dim[1] = self.dimensionFinder(self.dom)
 
-    def createTransMatrix(self):
+    def createTransMatrix(self) -> None:
 
         # Split in Individual Systems
         systems = (self.cDom.split(","))
@@ -89,38 +90,38 @@ class Transform:
                 
                 count += self.dim[1]
 
-            self.matTrans = matTrans
+            self.matTrans: list = matTrans
 
         except:
             self.matTrans = None
 
-    def createMatrix(self):
+    def createMatrix(self) -> None:
         matrix = np.array(self.matTrans)
         matrix.shape = (self.dim)
-        self.matrix = matrix
+        self.matrix: list = matrix
         
-    def imgDimension(self):
+    def imgDimension(self) -> None:
         dimImg = np.linalg.matrix_rank(self.matrix)       
-        self.dimImg = dimImg
+        self.dimImg: int = dimImg
 
-    def findKernel(self):
+    def findKernel(self) -> None:
         dimKernel = self.matrix.shape[1] - self.dimImg
-        self.dimKernel = dimKernel
+        self.dimKernel: int = dimKernel
 
-    def findEigvals(self):
+    def findEigvals(self) -> None:
         eighvals = np.linalg.eigvals(self.matrix)
-        self.eighvals = eighvals
+        self.eighvals: list = eighvals
 
-    def isBijector(self):
+    def isItBijector(self) -> None:
         isBijector = self.dimImg == self.matrix.shape[0] and self.dimKernel == 0
-        self.isBijector = isBijector
+        self.isBijector: bool = isBijector
 
-    def isOperator(self):
+    def isItOperator(self) -> None:
         isOperator = self.dim[0] == self.dim[1]
-        self.isOperator = isOperator
+        self.isOperator: bool = isOperator
 
     # Console Print Data
-    def showData(self):
+    def showData(self) -> None:
         print(" Related Matrix: ")
         print(self.matrix)
         print(" Image Dimension: ", self.dimImg)
@@ -130,24 +131,24 @@ class Transform:
         else: print(" Bijector: NO ")
 
         if(self.isOperator): 
-            print(" Operator: YES")
+            print(" Operator: YES ")
             print(" Eigenvalue: ")
             print(self.eighvals)
 
         else:
             print(" Operator: NO ")
     
-    def getData(self):
+    def getData(self) -> dict:
         if(self.matTrans != None):
-            data = [self.matrix, self.dimImg, 
-                        self.dimKernel, self.isBijector, 
-                        self.isOperator]
+            data = {'matrix': self.matrix, 'imageDimension': self.dimImg, 
+                    'kernelDimension': self.dimKernel, 'isBijector': self.isBijector, 
+                    'isOperator': self.isOperator}
             
             if(self.isOperator):
-                data.append(self.eighvals)
+                data.update({'eighvals': self.eighvals})
                 
             else:
-                data.append(False)
+                data.update({'eighvals': False})
 
         else:
             data = None

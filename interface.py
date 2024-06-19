@@ -18,22 +18,22 @@ def printResults(results):
 
     else:
         labelMatrix.config(
-            text=f"Matriz:\n {results[0]}", bg=bgDefault)
+            text=f"Matriz:\n {results['matrix']}", bg=bgDefault)
         labelImgDim.config(
-            text=f"Dimensão da Imagem: {results[1]}", bg=bgDefault)
+            text=f"Dimensão da Imagem: {results['imageDimension']}", bg=bgDefault)
         labelKernelDim.config(
-            text=f"Dimensão do Kernel: {results[2]}", bg=bgDefault)
+            text=f"Dimensão do Kernel: {results['kernelDimension']}", bg=bgDefault)
         
-        if(results[3]):
+        if(results['isBijector']):
             labelBijector.config(
                 text=f"Bijetora: Sim", bg=bgDefault)
         else:
             labelBijector.config(
                 text=f"Bijetora: Não", bg=bgDefault)
             
-        if(results[4]):
+        if(results['isOperator']):
             labelOperator.config(text=f"Operadora: Sim", bg=bgDefault)
-            labelEigenvalue.config(text=f"Autovalores:\n {results[5]}",bg=bgDefault)
+            labelEigenvalue.config(text=f"Autovalores:\n {results['eighvals']}",bg=bgDefault)
         else:
             labelOperator.config(text=f"Operadora: Não", bg=bgDefault)
             labelEigenvalue.config(text=f"")
