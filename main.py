@@ -110,7 +110,9 @@ class Transform:
 
     def findEigvals(self) -> None:
         eighvals = np.linalg.eigvals(self.matrix)
-        self.eighvals: list = eighvals
+        self.eighvals: list = []
+        for eighval in eighvals:
+            self.eighvals.append(round(eighval, 3))
 
     def isItBijector(self) -> None:
         isBijector = self.dimImg == self.matrix.shape[0] and self.dimKernel == 0
