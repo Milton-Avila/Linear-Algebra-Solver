@@ -1,6 +1,6 @@
 # Linear Algebra Solver
 
-Execute Solver.exe
+Execute interface.py
 
 * Domínio: <br/>
 x, y, z
